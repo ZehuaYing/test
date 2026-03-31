@@ -1,0 +1,75 @@
+vehicle0:
+  engCap: 1000000.0
+  engCost: 0.0
+  capVector:
+  - 1.0
+  - 0.0
+  - 0.0
+  - 0.0
+  - 0.0
+  capVar:
+  - 0.0
+  - 0.0
+  - 0.0
+  - 0.0
+  - 0.0
+vehicle1:
+  engCap: 1000000.0
+  engCost: 0.0
+  capVector:
+  - 0.0
+  - 1.0
+  - 0.0
+  - 0.0
+  - 0.0
+  capVar:
+  - 0.0
+  - 0.0
+  - 0.0
+  - 0.0
+  - 0.0
+vehicle2:
+  engCap: 1000000.0
+  engCost: 0.0
+  capVector:
+  - 0.0
+  - 0.0
+  - 1.0
+  - 0.0
+  - 0.0
+  capVar:
+  - 0.0
+  - 0.0
+  - 0.0
+  - 0.0
+  - 0.0
+vehicle3:
+  engCap: 1000000.0
+  engCost: 0.0
+  capVector:
+  - 0.0
+  - 0.0
+  - 0.0
+  - 1.0
+  - 0.0
+  capVar:
+  - 0.0
+  - 0.0
+  - 0.0
+  - 0.0
+  - 0.0
+vehicle4:
+  engCap: 1000000.0
+  engCost: 0.0
+  capVector:
+  - 0.0
+  - 0.0
+  - 0.0
+  - 0.0
+  - 1.0
+  capVar:
+  - 0.0
+  - 0.0
+  - 0.0
+  - 0.0
+  - 0.0

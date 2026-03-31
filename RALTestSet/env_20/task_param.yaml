@@ -1,0 +1,308 @@
+task0:
+  and0:
+    or0:
+      capId: 2
+      capReq: 1.0
+      capVar: 0.0
+      geq: true
+task1:
+  and0:
+    or0:
+      capId: 3
+      capReq: 1.0
+      capVar: 0.0
+      geq: true
+task10:
+  and0:
+    or0:
+      capId: 0
+      capReq: 1.0
+      capVar: 0.0
+      geq: true
+  and1:
+    or0:
+      capId: 2
+      capReq: 1.0
+      capVar: 0.0
+      geq: true
+  and2:
+    or0:
+      capId: 3
+      capReq: 1.0
+      capVar: 0.0
+      geq: true
+  and3:
+    or0:
+      capId: 4
+      capReq: 1.0
+      capVar: 0.0
+      geq: true
+task11:
+  and0:
+    or0:
+      capId: 1
+      capReq: 1.0
+      capVar: 0.0
+      geq: true
+  and1:
+    or0:
+      capId: 2
+      capReq: 1.0
+      capVar: 0.0
+      geq: true
+  and2:
+    or0:
+      capId: 3
+      capReq: 1.0
+      capVar: 0.0
+      geq: true
+task12:
+  and0:
+    or0:
+      capId: 2
+      capReq: 1.0
+      capVar: 0.0
+      geq: true
+  and1:
+    or0:
+      capId: 4
+      capReq: 1.0
+      capVar: 0.0
+      geq: true
+task13:
+  and0:
+    or0:
+      capId: 0
+      capReq: 1.0
+      capVar: 0.0
+      geq: true
+  and1:
+    or0:
+      capId: 2
+      capReq: 1.0
+      capVar: 0.0
+      geq: true
+  and2:
+    or0:
+      capId: 4
+      capReq: 1.0
+      capVar: 0.0
+      geq: true
+task14:
+  and0:
+    or0:
+      capId: 1
+      capReq: 1.0
+      capVar: 0.0
+      geq: true
+task15:
+  and0:
+    or0:
+      capId: 1
+      capReq: 1.0
+      capVar: 0.0
+      geq: true
+  and1:
+    or0:
+      capId: 3
+      capReq: 1.0
+      capVar: 0.0
+      geq: true
+  and2:
+    or0:
+      capId: 4
+      capReq: 1.0
+      capVar: 0.0
+      geq: true
+task16:
+  and0:
+    or0:
+      capId: 0
+      capReq: 1.0
+      capVar: 0.0
+      geq: true
+  and1:
+    or0:
+      capId: 3
+      capReq: 1.0
+      capVar: 0.0
+      geq: true
+task17:
+  and0:
+    or0:
+      capId: 1
+      capReq: 1.0
+      capVar: 0.0
+      geq: true
+  and1:
+    or0:
+      capId: 4
+      capReq: 1.0
+      capVar: 0.0
+      geq: true
+task18:
+  and0:
+    or0:
+      capId: 0
+      capReq: 1.0
+      capVar: 0.0
+      geq: true
+  and1:
+    or0:
+      capId: 1
+      capReq: 1.0
+      capVar: 0.0
+      geq: true
+  and2:
+    or0:
+      capId: 3
+      capReq: 1.0
+      capVar: 0.0
+      geq: true
+task19:
+  and0:
+    or0:
+      capId: 0
+      capReq: 1.0
+      capVar: 0.0
+      geq: true
+  and1:
+    or0:
+      capId: 1
+      capReq: 1.0
+      capVar: 0.0
+      geq: true
+  and2:
+    or0:
+      capId: 2
+      capReq: 1.0
+      capVar: 0.0
+      geq: true
+  and3:
+    or0:
+      capId: 4
+      capReq: 1.0
+      capVar: 0.0
+      geq: true
+task2:
+  and0:
+    or0:
+      capId: 0
+      capReq: 1.0
+      capVar: 0.0
+      geq: true
+  and1:
+    or0:
+      capId: 1
+      capReq: 1.0
+      capVar: 0.0
+      geq: true
+  and2:
+    or0:
+      capId: 4
+      capReq: 1.0
+      capVar: 0.0
+      geq: true
+task3:
+  and0:
+    or0:
+      capId: 0
+      capReq: 1.0
+      capVar: 0.0
+      geq: true
+  and1:
+    or0:
+      capId: 3
+      capReq: 1.0
+      capVar: 0.0
+      geq: true
+  and2:
+    or0:
+      capId: 4
+      capReq: 1.0
+      capVar: 0.0
+      geq: true
+task4:
+  and0:
+    or0:
+      capId: 4
+      capReq: 1.0
+      capVar: 0.0
+      geq: true
+task5:
+  and0:
+    or0:
+      capId: 0
+      capReq: 1.0
+      capVar: 0.0
+      geq: true
+  and1:
+    or0:
+      capId: 1
+      capReq: 1.0
+      capVar: 0.0
+      geq: true
+  and2:
+    or0:
+      capId: 2
+      capReq: 1.0
+      capVar: 0.0
+      geq: true
+  and3:
+    or0:
+      capId: 3
+      capReq: 1.0
+      capVar: 0.0
+      geq: true
+  and4:
+    or0:
+      capId: 4
+      capReq: 1.0
+      capVar: 0.0
+      geq: true
+task6:
+  and0:
+    or0:
+      capId: 0
+      capReq: 1.0
+      capVar: 0.0
+      geq: true
+  and1:
+    or0:
+      capId: 2
+      capReq: 1.0
+      capVar: 0.0
+      geq: true
+task7:
+  and0:
+    or0:
+      capId: 3
+      capReq: 1.0
+      capVar: 0.0
+      geq: true
+task8:
+  and0:
+    or0:
+      capId: 0
+      capReq: 1.0
+      capVar: 0.0
+      geq: true
+task9:
+  and0:
+    or0:
+      capId: 0
+      capReq: 1.0
+      capVar: 0.0
+      geq: true
+  and1:
+    or0:
+      capId: 1
+      capReq: 1.0
+      capVar: 0.0
+      geq: true
+  and2:
+    or0:
+      capId: 4
+      capReq: 1.0
+      capVar: 0.0
+      geq: true
