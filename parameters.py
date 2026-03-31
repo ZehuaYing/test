@@ -22,6 +22,7 @@ class EnvParams:
 
 
 class TrainParams:
+    """单GPU建议全局模型使用GPU，局部模型使用CPU"""
     # worker 侧是否使用 GPU（一般是远程采样/推理）
     USE_GPU = False
 

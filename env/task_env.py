@@ -957,38 +957,50 @@ class TaskEnv:
         return reward, finished_tasks
 
     def get_efficiency(self):
+        # 计算每个任务的执行效率
         for task in self.task_dic.values():
             if task['feasible_assignment']:
+                # 若任务可行分配，则效率为已完成需求占总需求的比例
                 task['efficiency'] = abs(np.sum(task['requirements'] - task['status'])) / task['requirements'].sum()
             else:
+                # 若任务不可行分配，则给予较大的效率惩罚
                 task['efficiency'] = 10
+
+        # 计算所有任务的平均效率
         efficiency = np.mean(self.get_matrix(self.task_dic, 'efficiency'))
         return efficiency
 
     def stack_trajectory(self):
+        # 将每个智能体的轨迹列表堆叠为二维数组
         for agent in self.agent_dic.values():
             agent['trajectory'] = np.vstack(agent['trajectory'])
 
     def plot_animation(self, path, n):
+        # 生成所有智能体的轨迹
         self.generate_traj()
+
+        # 是否使用机器人图片代替三角形标记
         plot_robot_icon = False
         if plot_robot_icon:
             drone = plt.imread('env/drone.png')
             drone_oi = OffsetImage(drone, zoom=0.05)
 
+        # 获取离散颜色映射
         def get_cmap(n, name='Dark2'):
             '''
-            Returns a function that maps each index in 0, 1, ..., n-1 to a distinct
-            RGB color; the keyword argument name must be a standard mpl colormap name.
+            返回一个颜色映射函数，用于给不同物种分配不同颜色
             '''
             return plt.cm.get_cmap(name, n)
 
         cmap = get_cmap(self.species_num)
-        # Set up the plot
+
+        # 准备绘图数据
         self.stack_trajectory()
         finished_tasks = self.get_matrix(self.task_dic, 'finished')
         finished_rate = np.sum(finished_tasks) / len(finished_tasks)
-        gif_len = int(self.current_time/self.dt)
+        gif_len = int(self.current_time / self.dt)
+
+        # 创建画布
         fig, ax = plt.subplots(dpi=100)
         ax.set_xlim(-0.5, 10.5)
         ax.set_ylim(-0.5, 10.5)
@@ -996,63 +1008,125 @@ class TaskEnv:
         ax.set_yticks([])
         ax.set_aspect('equal')
         plt.subplots_adjust(left=0, right=0.85, top=0.87, bottom=0.02)
+
+        # 为每个智能体创建轨迹线
         lines = [ax.plot([], [], color=cmap(a['species']), zorder=0)[0] for a in self.agent_dic.values()]
+
+        # 设置标题
         ax.set_title(f'Agents finish {finished_rate * 100}% tasks within {self.current_time:.2f}min.'
-                     f'\nCurrent time is {0:.2f}min')
+                    f'\nCurrent time is {0:.2f}min')
+
+        # 构造图例
         color_map = []
         for i in range(self.species_num):
             color_map.append(patches.Patch(color=cmap(i), label='Agent species ' + str(i)))
         color_map.append(patches.Patch(color='g', label='Finished task'))
         color_map.append(patches.Patch(color='b', label='Unfinished task'))
+
         # red_patch = patches.Patch(color='r', label='Single agent')
         # yellow_patch = patches.Patch(color='y', label='Two agents')
         # cyan_patch = patches.Patch(color='c', label='Three agents')
         # magenta_patch = patches.Patch(color='m', label='>= Four agents')
+
+        # 显示图例
         if plot_robot_icon:
             ax.legend(handles=color_map, bbox_to_anchor=(0.99, 0.7))
         else:
-            ax.legend(handles=color_map,
-                      bbox_to_anchor=(0.99, 0.7))
-        task_squares = [ax.add_patch(patches.RegularPolygon(xy=(task['location'][0] * 10,
-                                                             task['location'][1] * 10),
-                                                            numVertices=int(task['requirements'].sum()) + 3,
-                                                            radius=0.3, color='b')) for task in self.task_dic.values()]
-        depot_tri = [ax.add_patch(patches.Circle((depot['location'][0] * 10,
-                                                  depot['location'][1] * 10),
-                                                 0.2, color='r')) for depot in self.depot_dic.values()]
-        agent_group = [ax.text(agent['location'][0] * 10, agent['location'][1] * 10, str(agent['ID']),
-                               horizontalalignment='center', verticalalignment='center', fontsize=8) for agent in self.agent_dic.values()]
+            ax.legend(handles=color_map, bbox_to_anchor=(0.99, 0.7))
+
+        # 绘制任务点，用多边形边数表示任务需求规模
+        task_squares = [ax.add_patch(
+            patches.RegularPolygon(
+                xy=(task['location'][0] * 10, task['location'][1] * 10),
+                numVertices=int(task['requirements'].sum()) + 3,
+                radius=0.3,
+                color='b'
+            )
+        ) for task in self.task_dic.values()]
+
+        # 绘制仓库点
+        depot_tri = [ax.add_patch(
+            patches.Circle(
+                (depot['location'][0] * 10, depot['location'][1] * 10),
+                0.2,
+                color='r'
+            )
+        ) for depot in self.depot_dic.values()]
+
+        # 为每个智能体添加文字标记
+        agent_group = [ax.text(
+            agent['location'][0] * 10,
+            agent['location'][1] * 10,
+            str(agent['ID']),
+            horizontalalignment='center',
+            verticalalignment='center',
+            fontsize=8
+        ) for agent in self.agent_dic.values()]
+
+        # 绘制智能体图标
         if plot_robot_icon:
             agent_triangles = []
             for a in self.agent_dic.values():
-                agent_triangles.append(ax.add_artist(AnnotationBbox(drone_oi, (self.depot_dic[a['species']]['location'][0] * 10,
-                                                     self.depot_dic[a['species']]['location'][1] * 10),
-                                       frameon=False)))
+                agent_triangles.append(
+                    ax.add_artist(
+                        AnnotationBbox(
+                            drone_oi,
+                            (self.depot_dic[a['species']]['location'][0] * 10,
+                            self.depot_dic[a['species']]['location'][1] * 10),
+                            frameon=False
+                        )
+                    )
+                )
         else:
-            agent_triangles = [ax.add_patch(patches.RegularPolygon(xy=(self.depot_dic[a['species']]['location'][0] * 10,
-                                                                       self.depot_dic[a['species']]['location'][1] * 10), numVertices=3,
-                                                                   radius=0.2, color=cmap(a['species'])))
-                               for a in self.agent_dic.values()]
+            agent_triangles = [ax.add_patch(
+                patches.RegularPolygon(
+                    xy=(self.depot_dic[a['species']]['location'][0] * 10,
+                        self.depot_dic[a['species']]['location'][1] * 10),
+                    numVertices=3,
+                    radius=0.2,
+                    color=cmap(a['species'])
+                )
+            ) for a in self.agent_dic.values()]
 
-        # Define the update function for the animation
+        # 定义动画每一帧的更新函数
         def update(frame):
+            # 更新标题，显示任务完成率和当前时间
             ax.set_title(f'Agents finish {finished_rate * 100}% tasks within {self.current_time:.2f}min.'
-                         f'\nCurrent time is {frame * self.dt:.2f}min')
+                        f'\nCurrent time is {frame * self.dt:.2f}min')
+
+            # 获取当前帧所有智能体的位置，并保留 4 位小数
             pos = np.round([agent['trajectory'][frame, 0:2] for agent in self.agent_dic.values()], 4)
+
+            # 统计相同位置上的智能体数量
             unq, count = np.unique(pos, axis=0, return_counts=True)
+
+            # 更新每个智能体的图形、文字和轨迹
             for agent in self.agent_dic.values():
+                # 计算当前智能体所在位置的重叠数量
                 repeats = int(count[np.argwhere(np.all(unq == np.round(agent['trajectory'][frame, 0:2], 4), axis=1))])
+
+                # 更新智能体图标位置
                 agent_triangles[agent['ID']].xy = tuple(agent['trajectory'][frame, 0:2] * 10)
+
+                # 更新文字标记位置
                 agent_group[agent['ID']].set_position(tuple(agent['trajectory'][frame, 0:2] * 10))
+
+                # 文字显示当前位置上重叠的智能体数量
                 agent_group[agent['ID']].set_text(str(repeats))
+
+                # 若使用机器人图标，则同步更新图标位置
                 if plot_robot_icon:
                     agent_triangles[agent['ID']].xyann = tuple(agent['trajectory'][frame, 0:2] * 10)
                     agent_triangles[agent['ID']].xybox = tuple(agent['trajectory'][frame, 0:2] * 10)
+
                 # else:
                 #     agent_triangles[agent['ID']].set_color('m' if repeats >= 4 else 'c' if repeats == 3
                 #                                            else 'y' if repeats == 2 else 'r')
+
+                # 更新智能体朝向
                 agent_triangles[agent['ID']].orientation = agent['trajectory'][frame, 2] - np.pi / 2
-                # Add the current frame's data point to the plot for each trajectory
+
+                # 更新轨迹线，只保留最近 40 帧
                 if frame > 40:
                     lines[agent['ID']].set_data(agent['trajectory'][frame - 40:frame + 1, 0] * 10,
                                                 agent['trajectory'][frame - 40:frame + 1, 1] * 10)
@@ -1060,101 +1134,185 @@ class TaskEnv:
                     lines[agent['ID']].set_data(agent['trajectory'][:frame + 1, 0] * 10,
                                                 agent['trajectory'][:frame + 1, 1] * 10)
 
+            # 更新任务点显示状态
             for task in self.task_dic.values():
                 if self.reactive_planning:
-                    if task['ID'] > np.clip(frame * self.dt//10 * 20 + 20, 20, 100):
+                    # 若启用动态规划，则根据时间控制任务显示
+                    if task['ID'] > np.clip(frame * self.dt // 10 * 20 + 20, 20, 100):
                         task_squares[task['ID']].set_color('w')
                         task_squares[task['ID']].set_zorder(0)
                     else:
                         task_squares[task['ID']].set_color('b')
                         task_squares[task['ID']].set_zorder(1)
+
+                # 若任务已完成，则将任务点标记为绿色
                 if frame * self.dt >= task['time_finish'] > 0:
                     task_squares[task['ID']].set_color('g')
+
             return lines
 
-        # Set up the animation
+
+        # 创建动画对象
         ani = FuncAnimation(fig, update, frames=gif_len, interval=100, blit=True)
+
+        # 保存为 gif 文件
         ani.save(f'{path}/episode_{n}_{self.current_time:.1f}.gif')
 
     def execute_by_route(self, path='./', method=0, plot_figure=False):
+        # 设置是否绘制动画
         self.plot_figure = plot_figure
+
+        # 设置最大等待时间
         self.max_waiting_time = 200
+
+        # 在未结束且未超过最大仿真时间时持续执行
         while not self.finished and self.current_time < 200:
+            # 获取下一批需要决策的智能体及对应时间
             decision_agents, current_time = self.next_decision()
             self.current_time = current_time
+
+            # 合并已完成和阻塞后释放的智能体
             decision_agents = decision_agents[0] + decision_agents[1]
+
+            # 依次为这些智能体执行预设路径
             for agent in decision_agents:
                 if self.agent_dic[agent]['pre_set_route'] is None or not self.agent_dic[agent]['pre_set_route']:
+                    # 若没有预设路径，则返回仓库，并停止后续决策
                     self.agent_step(agent, 0, 0)
                     self.agent_dic[agent]['next_decision'] = np.nan
                     continue
+
+                # 按预设路径的下一个任务执行一步
                 self.agent_step(agent, self.agent_dic[agent]['pre_set_route'].pop(0), 0)
+
+            # 检查环境是否结束
             self.finished = self.check_finished()
+
+        # 若需要，则绘制动画
         if self.plot_figure:
             self.plot_animation(path, method)
+
+        # 输出并返回总执行时间
         print(self.current_time)
         return self.current_time
 
     def execute_greedy_action(self, path='./', method=0, plot_figure=False):
+        # 设置是否绘制动画
         self.plot_figure = plot_figure
+
+        # 在任务未完成且当前时间未超过上限时循环执行
         while not self.finished and self.current_time < 200:
+            # 获取下一批可释放的智能体及对应时间
             release_agents, current_time = self.next_decision()
             self.current_time = current_time
+
+            # 只要还有可决策的智能体，就持续分配动作
             while release_agents[0] or release_agents[1]:
+                # 优先处理已完成任务释放的智能体，否则处理阻塞释放的智能体
                 agent_id = release_agents[0].pop(0) if release_agents[0] else release_agents[1].pop(0)
                 agent = self.agent_dic[agent_id]
+
+                # 获取当前智能体可观测到的任务、智能体信息和动作掩码
                 tasks_info, agents_info, mask = self.agent_observe(agent_id, max_waiting=True)
+
+                # 初始化最近距离和对应动作
                 dist = np.inf
                 action = None
+
+                # 在所有可选动作中选择距离最近的目标
                 for task_id, masked in enumerate(mask[0, :]):
                     if not masked:
-                        dist_ = self.calculate_eulidean_distance(agent, self.task_dic[
-                            task_id - 1]) if task_id - 1 >= 0 else self.calculate_eulidean_distance(agent,
-                                                                                          self.depot_dic[agent['species']])
+                        dist_ = self.calculate_eulidean_distance(
+                            agent, self.task_dic[task_id - 1]
+                        ) if task_id - 1 >= 0 else self.calculate_eulidean_distance(
+                            agent, self.depot_dic[agent['species']]
+                        )
+
                         if dist_ < dist:
+                            dist = dist_
                             action = task_id
+
+                # 执行选中的贪心动作
                 self.agent_step(agent_id, action, 0)
+
+            # 检查当前环境是否结束
             self.finished = self.check_finished()
+
+        # 若需要，则绘制动画
         if self.plot_figure:
             self.plot_animation(path, method)
+
+        # 输出并返回总执行时间
         print(self.current_time)
         return self.current_time
 
     def pre_set_route(self, routes, agent_id):
+        # 如果该智能体当前没有预设路径，则直接赋值
         if not self.agent_dic[agent_id]['pre_set_route']:
             self.agent_dic[agent_id]['pre_set_route'] = routes
         else:
+            # 否则将新路径追加到原有预设路径后面
             self.agent_dic[agent_id]['pre_set_route'] += routes
-
+    
+    
     def process_map(self, path):
+        # 导入 pandas，用于保存结果数据
         import pandas as pd
+
+        # 按任务需求对任务进行分组
         grouped_tasks = dict()
+
+        # 获取所有不同的任务需求类型
         groups = list(set(np.array(self.get_matrix(self.task_dic, 'requirements')).squeeze(1).tolist()))
+
+        # 为每种任务需求初始化一个分组字典
         for task_requirement in groups:
             grouped_tasks[task_requirement] = dict()
+
+        # 记录每个分组内任务的索引
         index = np.zeros_like(groups)
+
+        # 将任务按需求类型放入对应分组
         for i, task in self.task_dic.items():
             requirement = int(task['requirements'])
             ind = index[groups.index(requirement)]
             grouped_tasks[requirement].update({ind: task})
             index[groups.index(requirement)] += 1
+
+        # 去掉空分组
         grouped_tasks = {key: value for key, value in grouped_tasks.items() if len(value) > 0}
+
+        # 提取每组任务的完成时间
         time_finished = [self.get_matrix(dic, 'time_finish') for dic in grouped_tasks.values()]
+
+        # 按时间步统计各组任务完成比例
         t = 0
         time_tick_stamp = dict()
         while t <= self.current_time:
-            time_tick_stamp[t] = [np.sum(np.array(ratio) < t)/len(ratio) for ratio in time_finished]
+            time_tick_stamp[t] = [np.sum(np.array(ratio) < t) / len(ratio) for ratio in time_finished]
             t += 0.1
             t = np.round(t, 1)
+
+        # 将统计结果保存为 DataFrame
         pd = pd.DataFrame(time_tick_stamp)
+
+        # 导出为 CSV 文件
         pd.to_csv(f'{path}time_RL.csv')
 
 
 if __name__ == '__main__':
     import pickle
+
+    # 测试集保存目录名称
     testSet = 'RALTestSet'
+
+    # 创建测试集目录
     os.mkdir(f'../{testSet}')
+
+    # 生成 50 个环境实例并保存为 pkl 文件
     for i in range(50):
         env = TaskEnv((3, 3), (5, 5), (20, 20), 5, seed=i)
         pickle.dump(env, open(f'../{testSet}/env_{i}.pkl', 'wb'))
+
+    # 初始化最后一个环境的状态
     env.init_state()

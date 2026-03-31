@@ -321,7 +321,7 @@ class Decoder(nn.Module):
         # 返回最终解码表示
         return tgt
 
-
+"""训练网络"""
 class AttentionNet(nn.Module):
     def __init__(self, agent_input_dim, task_input_dim, embedding_dim):
         super(AttentionNet, self).__init__()
@@ -329,7 +329,7 @@ class AttentionNet(nn.Module):
         self.agent_embedding = nn.Linear(agent_input_dim, embedding_dim)
         self.task_embedding = nn.Linear(task_input_dim, embedding_dim)  # layer for input information
         # 融合当前 agent 状态、任务全局信息、agent 全局信息
-        self.fusion = nn.Linear(embedding_dim * 3, embedding_dim)
+        self.fusion = nn.Linear(embedding_dim * 3, embedding_dim)     
 
         # 任务与 agent 各自的编码器
         self.taskEncoder = Encoder(embedding_dim=embedding_dim, n_head=8, n_layer=1)

@@ -12,12 +12,14 @@ import os
 import numpy as np
 import random
 
+# 导入自己的配置文件和模块
 from attention import AttentionNet
 from runner import RLRunner
 from parameters import *
 from env.task_env import TaskEnv
-from scipy.stats import ttest_rel
-from torch.distributions import Categorical
+"""判断变化是否真实存在"""
+from scipy.stats import ttest_rel    # 配对样本 t 检验
+from torch.distributions import Categorical     # 表示多个离散动作的概率分布
 
 
 class Logger(object):
@@ -222,9 +224,9 @@ def main():
     
     # 创建基线网络（用于对照评估、稳定训练）并放到全局设备
     baseline_network = AttentionNet(
-        TrainParams.AGENT_INPUT_DIM,
-        TrainParams.TASK_INPUT_DIM,
-        TrainParams.EMBEDDING_DIM
+        TrainParams.AGENT_INPUT_DIM,    # Agent输入：基础特征6 + trait维度
+        TrainParams.TASK_INPUT_DIM,     # Task输入：基础特征5 + 2trait维度
+        TrainParams.EMBEDDING_DIM       # 隐表示维度（128）与主网络一致
     ).to(device)
     
     # 为主训练网络构建优化器
